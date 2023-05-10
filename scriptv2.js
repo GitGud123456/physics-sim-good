@@ -11,12 +11,11 @@ btn.addEventListener("click", initialize);
 let bhm = 0;
 let xL = 0;
 let yL = 0;
-
 function initialize() {
   bhm = +document.getElementById("bhm").value;
   xL = +document.getElementById("lx").value;
   yL = +document.getElementById("ly").value;
-  middlehole = gravityWell(xL, yL, bhm);
+  holearray.push(new gravityWell(xL, yL, bhm));
 }
 
 function returnclick(event) {
@@ -55,7 +54,7 @@ gravityWell.prototype.draw = function () {
   ctx.fillStyle = "black";
   ctx.fill();
 };
-let middlehole = new gravityWell(500, 400, 1000);
+const middlehole = holearray.push(new gravityWell(500, 400, 1000));
 // //
 // Object.prototype.update = function () {
 //     var dx = canvas.width / 2 - this.x;
@@ -73,7 +72,9 @@ let middlehole = new gravityWell(500, 400, 1000);
 function animate() {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  middlehole.draw();
+  for (var i = 0; i < holearray.length; i++) {
+    holearray[i].draw();
+  }
 }
 
 animate();
