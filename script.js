@@ -74,11 +74,12 @@ var ctx = canvas.getContext("2d");
 var objects = [];
 canvas.addEventListener("click", returnclick);
 
-function Object(x, y, vx, vy) {
+function Object(x, y, vx, vy, m) {
   this.x = x;
   this.y = y;
   this.vx = vx;
   this.vy = vy;
+  this.m = m;
 }
 
 Object.prototype.draw = function () {
@@ -88,11 +89,23 @@ Object.prototype.draw = function () {
   ctx.fill();
 };
 
-function areColliding(obj1, obj2) {
-  var dx = obj1.x - obj2.x;
-  var dy = obj1.y - obj2.y;
+function areColliding(obj1, obj2, dist) {
+  var dx = Math.abs(obj1.x - obj2.x);
+  var dy = Math.abs(obj1.y - obj2.y);
   var distance = Math.sqrt(dx * dx + dy * dy);
   return distance < 100;
+}
+
+// function areColliding(obj1, obj2) {
+//   var dx = obj1.x - obj2.x;
+//   var dy = obj1.y - obj2.y;
+//   return distance < 100;
+// }
+
+function GF(m1, bhx, bhy, r1, m2, ballx, bally, r2) {
+  var G = m1 / Math.sqrt((bhx - ballx) ** 2 + (bhy - bally) ** 2) ** 2;
+  var D = Math.sqrt((bhx - ballx) ** 2 + (bhy - bally) ** 2);
+  return [G, D];
 }
 
 function update() {
@@ -102,12 +115,18 @@ function update() {
       if (areColliding(objects[i], objects[j])) {
         var dx = objects[i].x - objects[j].x;
         var dy = objects[i].y - objects[j].y;
+        var v1 = Math.sqrt(objects[i].vx ** 2 + objects[i].vy ** 2);
+        var v2 = Math.sqrt(objects[j].vx ** 2 + objects[j].vy ** 2);
+        nv1 = v1 - v2;
+
+        var dx = objects[i].x - objects[j].x;
+        var dy = objects[i].y - objects[j].y;
         var distance = Math.sqrt(dx * dx + dy * dy);
         var overlap = 100 - distance;
-        objects[i].vx += ((dx / distance) * overlap) / 2;
-        objects[i].vy += ((dy / distance) * overlap) / 2;
-        objects[j].vx -= ((dx / distance) * overlap) / 2;
-        objects[j].vy -= ((dy / distance) * overlap) / 2;
+        objects[i].vx += (dx / distance) * overlap;
+        objects[i].vy += (dy / distance) * overlap;
+        objects[j].vx -= (dx / distance) * overlap;
+        objects[j].vy -= (dy / distance) * overlap;
       }
     }
   }

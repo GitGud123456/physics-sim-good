@@ -19,30 +19,27 @@ function initialize() {
 }
 
 function returnclick(event) {
-  if(select.value == "ball") {
-  const x = event.clientX - canvas.offsetLeft;
-  const y = event.clientY - canvas.offsetTop;
-  var vx = 0
-  var vy = 0
-  objects.push(new Object(x, y, vx, vy));
-} else if(select.value == "bh"){
-  var x = event.clientX - canvas.offsetLeft;
-  var y = event.clientY - canvas.offsetTop;
-  var mass = 1
-  holearray.push(new gravityWell(x, y, mass));
+  if (select.value == "ball") {
+    const x = event.clientX - canvas.offsetLeft;
+    const y = event.clientY - canvas.offsetTop;
+    var vx = 0;
+    var vy = 0;
+    objects.push(new Object(x, y, vx, vy));
+  } else if (select.value == "bh") {
+    var x = event.clientX - canvas.offsetLeft;
+    var y = event.clientY - canvas.offsetTop;
+    var mass = 1;
+    holearray.push(new gravityWell(x, y, mass));
   }
 }
 
-
-// for (var i = 0; i < 100; i++) {
-//   var x = Math.random() * canvas.width;
-//   var y = Math.random() * canvas.height;
-//   var vx = Math.random() * 4 - 2;
-//   var vy = Math.random() * 4 - 2;
-//   objects.push(new Object(x, y, vx, vy));
-// }
-
-
+for (var i = 0; i < 100; i++) {
+  var x = Math.random() * canvas.width;
+  var y = Math.random() * canvas.height;
+  var vx = Math.random() * 4 - 2;
+  var vy = Math.random() * 4 - 2;
+  objects.push(new Object(x, y, vx, vy));
+}
 
 function Object(x, y, vx, vy) {
   this.x = x;
@@ -63,7 +60,6 @@ function gravityWell(x, y, mass) {
   this.y = y;
   this.mass = mass;
 }
-
 
 function areColliding(obj1, obj2) {
   var dx = obj1.x - obj2.x;
@@ -90,45 +86,43 @@ function update() {
   }
 }
 
+// function updateC() {
+//   for (var i = 0; i < objects.length; i++) {
+//     objects[i].update();
+//     for (var j = i + 1; j < holearray.length; j++) {
+//       if (areColliding(objects[i], holearray[j])) {
+//         objects[i].vx = -1;
+//         objects[i].vy = -1;
+//         //objects[j].vx -= ((dx / distance) * overlap) / 2;
+//         //objects[j].vy -= ((dy / distance) * overlap) / 2;
+//       }
+//     }
+//   }
+// }
 
-function updateC() {
-  for (var i = 0; i < objects.length; i++) {
-    objects[i].update();
-    for (var j = i + 1; j < holearray.length; j++) {
-      if (areColliding(objects[i], holearray[j])) {
-        objects[i].vx = -1
-        objects[i].vy = -1
-        //objects[j].vx -= ((dx / distance) * overlap) / 2;
-        //objects[j].vy -= ((dy / distance) * overlap) / 2;
-      }
-    }
-  }
+function GF(m1, bhx, bhy, ballx, bally) {
+  var G = m1 / Math.sqrt((bhx - ballx) ** 2 + (bhy - bally) ** 2) ** 2;
+  var D = Math.sqrt((bhx - ballx) ** 2 + (bhy - bally) ** 2);
+  return [G, D];
 }
-
-
-function GF(m1,bhx,bhy,ballx,bally) {
- var G = m1/ (Math.sqrt((bhx - ballx) **2 + (bhy - bally) **2)) **2
- var D = (Math.sqrt((bhx - ballx) **2 + (bhy - bally) **2))
-return [G,D]
-}
-
-
 
 Object.prototype.update = function () {
   for (var i = 0; i < holearray.length; i++) {
-  
-  var dx = holearray[i].x - this.x;
-  var dy = holearray[i].y - this.y;
-  let [G,D]= GF(holearray[i].mass,holearray[i].x,holearray[i].y,this.x,this.y)
-  if(D <31) {
-    G = .00001
+    var dx = holearray[i].x - this.x;
+    var dy = holearray[i].y - this.y;
+    let [G, D] = GF(
+      holearray[i].mass,
+      holearray[i].x,
+      holearray[i].y,
+      this.x,
+      this.y
+    );
+    this.vx += dx * G;
+    this.vy += dy * G;
+    this.x += this.vx;
+    this.y += this.vy;
   }
-  this.vx += (dx) * G
-  this.vy += (dy) * G
-  this.x += this.vx;
-  this.y += this.vy;
-  }
-}
+};
 
 gravityWell.prototype.draw = function () {
   ctx.beginPath();
@@ -136,8 +130,6 @@ gravityWell.prototype.draw = function () {
   ctx.fillStyle = "black";
   ctx.fill();
 };
-//const middlehole = holearray.push(new gravityWell(500, 400, 10));
-// MAIN ANIMATION LOOP
 
 function animate() {
   requestAnimationFrame(animate);
@@ -147,9 +139,9 @@ function animate() {
   }
   for (var i = 0; i < objects.length; i++) {
     objects[i].draw();
-  //  objects[i].update();
+    //  objects[i].update();
   }
-  updateC();
+  // updateC();
   update();
 }
 
