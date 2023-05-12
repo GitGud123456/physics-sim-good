@@ -129,7 +129,9 @@ function GF(obj1, obj2) {
     (GravityCoeffcient * obj1.m * obj2.m) /
     Math.sqrt((bhx - ballx) ** 2 + (bhy - bally) ** 2) ** 2;
   var D = Math.sqrt((obj1.x - obj2.x) ** 2 + (obj1.y - obj2.y) ** 2);
-  return [G, D];
+  var dx = obj1.x - obj2.x;
+  var dy = obj1.y - obj2.y;
+  return [G, D, dx, dy];
 }
 
 function update() {
@@ -180,7 +182,7 @@ function update() {
           objects[j].y -= (Math.cos(angle) * distance) / mjratio;
         }
       }
-      [G, D] = GF(objects[i], objects[j]);
+      [G, D, Dx, Dy] = GF(objects[i], objects[j]);
     }
   }
 }
