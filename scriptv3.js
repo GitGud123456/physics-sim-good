@@ -118,13 +118,6 @@ function update() {
     objects[i].update();
     for (var j = i + 1; j < objects.length; j++) {
       if (areColliding(objects[i], objects[j])) {
-        var nv2x =
-          (objects[i].vx + (objects[j].vx * objects[j].m) / objects[i].m) *
-          objects[j].m;
-        var nv1x = objects[i].vx / objects[j].m ** 2 - objects[i].vx;
-        var nv2y =
-          (objects[i].vy + (objects[j].vy * objects[j].m) / objects[i].m) *
-          objects[j].m;
         var Pinitialx =
           objects[i].vx * objects[i].m + objects[j].vx * objects[j].m;
         var Pinitialy =
@@ -145,6 +138,21 @@ function update() {
         objects[i].vy = v1fy;
         objects[j].vx = v2fx;
         objects[j].vy = v2fy;
+
+        var dx = objects[i].x - objects[j].x;
+        var dy = objects[i].y - objects[j].y;
+        var distance = Math.sqrt(dx ** 2 + dy ** 2);
+        var overlap = objects[i].r + objects[j].r - distance;
+        var miratio = objects[i].m / objects[j].m;
+        var mjratio = objects[j].m / objects[i].m;
+        if (overlap > 1) {
+          console.log("1");
+          var angle = Math.atan2(dx, dy);
+          objects[i].x += (Math.sin(angle) * distance) / miratio;
+          objects[j].x -= (Math.sin(angle) * distance) / mjratio;
+          objects[i].y += (Math.cos(angle) * distance) / miratio;
+          objects[j].y -= (Math.cos(angle) * distance) / mjratio;
+        }
       }
     }
   }
@@ -152,9 +160,6 @@ function update() {
 
 //update Obj position
 Object.prototype.update = function () {
-  this.x += this.vx + Ff(this.m, this.vx);
-  this.y += this.vy + Ff(this.m, this.vy);
-
   //safety
   if (this.x <= 0 + this.r) {
     this.x = 0 + this.r;
@@ -172,6 +177,9 @@ Object.prototype.update = function () {
     this.y = canvas.height - this.r;
     this.vy *= -1;
   }
+
+  this.x += this.vx + Ff(this.m, this.vx);
+  this.y += this.vy + Ff(this.m, this.vy);
 };
 
 //animate objects
