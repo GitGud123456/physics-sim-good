@@ -9,23 +9,46 @@
   </head>
 
   <body>
-    <button id="btn">Go</button>
-    Hello world
+    <button id="btn">create</button>
 
-    <p>
+    <!-- <p>
       black hole masss<input id="bhm" type="number" /> L X<input
         id="lx"
         type="number"
       />
       L Y<input id="ly" type="number" />
+    </p> -->
+    <p>
+      ball mass:<input id="bm" type="number" value="0" /> ball.r:
+      <input id="br" type="number" value="10" />
+      <br />
+      ball.vx:<input id="bvx" type="number" value="0" /> ball.vy:
+      <input id="bvy" type="number" value="0" />
+      <br />
+      ball.x:
+      <input id="bx" type="number" value="100" /> ball.y:<input
+        id="by"
+        type="number"
+        value="100"
+      />
     </p>
-    ball mass <input id="bm" type="number" />
-    <select id="mct">
+    <hr />
+    Attraction force <input id="pAF" type="number" value="0" />
+    <br />
+    Air friction <input id="pAf" type="number" value="0.0" />
+    <br />
+    Collision response<input id="pCr" type="number" value="0" />
+    <br />
+    Viscosity <input id="pV" type="number" value="0" />
+    <br />
+    G coefficient <input id="GC" type="number" value="0.0000000000667" />
+    <!-- <select id="mct">
       <option value="bh">black hole</option>
       <option value="ball">ball</option>
-    </select>
+    </select> -->
 
     <!-- <script src="scriptv2.js"></script> -->
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
+    <script src="scriptv3.js"></script>
   </body>
 </html>
