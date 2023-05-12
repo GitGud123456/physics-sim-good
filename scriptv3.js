@@ -7,9 +7,10 @@ canvas.addEventListener("click", returnclick);
 var holearray = [];
 let select = document.getElementById("mct");
 let btn = document.getElementById("btn");
-//btn.addEventListener("click", );
+let clearbtn = document.getElementById("clear");
+clearbtn.addEventListener("click", clear);
 document.addEventListener("keyup", initialize);
-btn.addEventListener("click", initialize, applyParameters);
+btn.addEventListener("click", makeRandom, initialize);
 let bhm = 0;
 let xL = 0;
 let yL = 0;
@@ -32,11 +33,27 @@ function returnclick(event) {
   objects.push(new Object(x, y, vx, vy, m, r));
 }
 
-for (var i = 0; i < 100; i++) {
+function makeRandom() {
+  console.log("1");
+  var x = Math.random() * canvas.width;
+  var y = Math.random() * canvas.height;
+  var vx = Math.random() * 4;
+  var vy = Math.random() * 4;
+  var m = Math.random() * 100;
+  var r = m / 2;
+  objects.push(new Object(x, y, vx, vy, m, r));
+}
+
+function clear() {
+  objects = [];
+}
+for (var i = 0; i < 500; i++) {
   var x = Math.random() * canvas.width;
   var y = Math.random() * canvas.height;
   var vx = Math.random() * 4 - 2;
   var vy = Math.random() * 4 - 2;
+  var m = Math.random() * 20;
+  var r = m / 2;
   objects.push(new Object(x, y, vx, vy, m, r));
 }
 
@@ -52,8 +69,8 @@ function applyParameters() {
     parameterViscosity,
   ];
 }
-objects.push(new Object(100, 325, 1, 0, 200, 10));
-objects.push(new Object(900, 325, -1, 0, 20, 10));
+objects.push(new Object(100, 325, 10, 0, 20, 10));
+//objects.push(new Object(900, 325, -4, 0, 1, 1));
 // create Obj
 function Object(x, y, vx, vy, m, r) {
   this.x = x;
@@ -93,7 +110,7 @@ function areColliding(obj1, obj2) {
   var dx = obj1.x - obj2.x;
   var dy = obj1.y - obj2.y;
   var distance = Math.sqrt(dx ** 2 + dy ** 2);
-  return distance < obj1.r + obj2.r;
+  return distance <= obj1.r + obj2.r + 0.5;
 }
 
 function update() {
@@ -138,6 +155,7 @@ Object.prototype.update = function () {
   this.x += this.vx + Ff(this.m, this.vx);
   this.y += this.vy + Ff(this.m, this.vy);
 
+  //safety
   if (this.x <= 0 + this.r) {
     this.x = 0 + this.r;
     this.vx *= -1;
@@ -155,11 +173,6 @@ Object.prototype.update = function () {
     this.vy *= -1;
   }
 };
-// function GF(m1, bhx, bhy, r1, m2, ballx, bally, r2) {
-//   var G = m1 / Math.sqrt((bhx - ballx) ** 2 + (bhy - bally) ** 2) ** 2;
-//   var D = Math.sqrt((bhx - ballx) ** 2 + (bhy - bally) ** 2);
-//   return [G, D];
-// }
 
 //animate objects
 Object.prototype.draw = function () {
