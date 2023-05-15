@@ -75,10 +75,10 @@ function update() {
         var mjratio = objects[j].m / objects[i].m;
         if (overlap > 2) {
           var angle = Math.atan2(dx, dy);
-          objects[i].x += (Math.sin(angle) * distance) / miratio;
-          objects[j].x -= (Math.sin(angle) * distance) / mjratio;
-          objects[i].y += (Math.cos(angle) * distance) / miratio;
-          objects[j].y -= (Math.cos(angle) * distance) / mjratio;
+          objects[i].x += (Math.sin(angle) * distance) / 2;
+          objects[j].x -= (Math.sin(angle) * distance) / 2;
+          objects[i].y += (Math.cos(angle) * distance) / 2;
+          objects[j].y -= (Math.cos(angle) * distance) / 2;
         }
       }
       //[G, D, Dx, Dy] = GF(objects[i], objects[j]);
@@ -105,17 +105,19 @@ Object.prototype.update = function () {
     this.y = canvas.height - this.r;
     this.vy *= -1;
   }
-  this.x += this.vx + Ff(this.m, this.vx);
-  this.y += this.vy + Ff(this.m, this.vy);
 
   //grav stuff
   for (var i = 0; i < holearray.length; i++) {
     let [G, D, dx, dy] = bGF(holearray[i], this.m, this.x, this.y);
-
-    this.vx += dx * G;
-    this.vy += dy * G;
-    this.x += this.vx;
-    this.y += this.vy;
+    var angle = Math.atan2(dx, dy);
+    let ax = Math.cos(angle) * G;
+    let ay = Math.sin(angle) * G;
+    // this.vx += ax;
+    // this.vy += ay;
+    // this.x += this.vx;
+    // this.y += this.vy;
+    this.x += this.vx + Ff(this.m, this.vx) - ax;
+    this.y += this.vy + Ff(this.m, this.vy) - ay;
   }
 };
 
@@ -244,8 +246,9 @@ function makeRandom() {
   var r = m / 2;
   objects.push(new Object(x, y, vx, vy, m, r));
 }
-objects.push(new Object(100, 325, 4, 0, 20, 10));
+objects.push(new Object(100, 325, 4, 0, 30, 10));
 objects.push(new Object(900, 325, -4, 0, 20, 10));
+holearray.push(new gravityWell(500, 325, 0, 0, 20, 10));
 // for (var i = 0; i < 500; i++) {
 //   var x = Math.random() * canvas.width;
 //   var y = Math.random() * canvas.height;
